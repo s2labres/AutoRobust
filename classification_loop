@@ -1,0 +1,396 @@
+using Pkg
+Pkg.offline()
+
+Pkg.activate("./")
+#Pkg.instantiate()
+Pkg.develop(PackageSpec(path = "/home/kylesa/avast_clf/ExplainMill_example/ExplainMill.jl-master"))
+
+using Flux, MLDataPattern, Mill, JsonGrinder, JSON, Statistics, IterTools, StatsBase, ThreadTools
+using JsonGrinder: suggestextractor, ExtractDict
+using Mill: reflectinmodel
+using CSV, DataFrames
+using Random
+using PrettyTables
+using ExplainMill
+using Printf
+using Plots
+using Dates
+using BSON: @load
+using BSON: @save
+using Random
+using ArgParse
+
+
+
+base_path = "/home/kylesa/avast_clf/v0.2/"
+Settings = Dict("model_multi_path"=>base_path*"model_multi.bson",
+"extractor_multi_path"=>base_path*"extractor_multi.bson",
+"labels"=>base_path*"data_avast/labels.csv",
+"report_folder"=>base_path*"data_avast/")
+
+JsonGrinder.skip_single_key_dict!(false)
+
+function split_train_test(d,pct)
+    test = Dict()
+    train = Dict()
+    for (key,value) in d
+        train_,test_ = splitobs(value,pct)
+        #println("$(length(train_)) $(length(test_)) $(length(value))")
+        train[key] = train_
+        test[key] = test_
+    end
+    return train,test
+end
+
+function load_model(balanced=false)
+    if isfile(Settings["model_multi_path"]) && isfile(Settings["extractor_multi_path"])
+        print("Loading the model\n")
+        @load Settings["model_multi_path"] model
+        @load Settings["extractor_multi_path"] extractor
+    else
+        print("No model found, creating one ... ")
+        df_labels = CSV.read(Settings["labels"], DataFrame)
+        all_samples_count = size(df_labels, 1)
+        println("All samples: $(all_samples_count)")
+        println("Malware families: ")
+        [println(k => v) for (k,v) in countmap(df_labels.family)] 
+        indexes = Dict()
+        for (i,v) in enumerate(df_labels.family)
+            if haskey(indexes,v)
+                push!(indexes[v],i)
+            else
+                indexes[v] = [i]
+            end
+        end
+        train,test = split_train_test(indexes,0.7)
+        if balanced
+            lowebound = minimum([v for (k,v) in countmap(df_labels.family)])
+            print(lowebound)
+            for (k,v) in train 
+                if length(v) > lowebound
+                    train[k] = v[1:lowebound]
+                end
+            end
+        end
+        train_indexes = []
+        test_indexes = []
+        for (k,v) in train 
+            train_indexes =vcat(train_indexes,v)
+        end
+        for (k,v) in test 
+            test_indexes= vcat(test_indexes,v)
+        end
+        #train_size = div(all_samples_count, 3)*2
+        #test_size = all_samples_count - train_size
+        println("Train size: $(length(train_indexes))")
+        println("Test size: $(length(test_indexes))")
+        # Train-test split
+        #train_indexes = sample(1:all_samples_count, train_size, replace=false) ;
+        #test_indexes = [setdiff(Set(1:all_samples_count), Set(train_indexes))...] ;
+        JSONS_PATH = Settings["report_folder"]
+        jsons = tmap(df_labels.hash) do s
+            try 
+                open(JSON.parse, "$(JSONS_PATH)/$(s).json")
+            catch e
+                @error "Error when processing sha $s: $e"
+            end
+        end ;
+        chunks = Iterators.partition(train_indexes, 28)
+        sch_parts = tmap(chunks) do ch
+            JsonGrinder.schema(jsons[ch])
+        end
+        complete_schema = merge(sch_parts...)
+        printtree(complete_schema)
+        extractor = suggestextractor(complete_schema)
+        data = tmap(extractor, jsons) ;
+        @assert size(data, 1) == size(df_labels, 1)
+        labelnames = sort(unique(df_labels.family))
+        neurons = 32
+        model = reflectinmodel(complete_schema, extractor,
+            k -> Dense(k, neurons, relu),
+            d -> SegmentedMeanMax(d),
+            b = Dict("" => k -> Dense(k, length(labelnames))),
+        )
+        minibatchsize = 100
+        function minibatch()
+            idx = sample(train_indexes, minibatchsize, replace = false)
+            reduce(catobs, data[idx]), Flux.onehotbatch(df_labels.family[idx], labelnames)
+        end
+        iterations = 120
+        function accuracy(x,y) 
+            vals = tmap(x) do s
+                Flux.onecold(softmax(model(s).data), labelnames)[1]
+            end
+            mean(vals .== y)
+        end     
+        eval_trainset = shuffle(train_indexes)[1:1000]
+        eval_testset = shuffle(test_indexes)[1:1000]
+        cb = () -> begin
+            train_acc = accuracy(data[eval_trainset], df_labels.family[eval_trainset])
+            test_acc = accuracy(data[eval_testset], df_labels.family[eval_testset])
+            println("accuracy: train = $train_acc, test = $test_acc")
+        end
+        ps = Flux.params(model)
+        loss = (x,y) -> Flux.logitcrossentropy(model(x).data, y)
+        opt = ADAM()
+        Flux.Optimise.train!(loss, ps, repeatedly(minibatch, iterations), opt, cb = Flux.throttle(cb, 2))
+        full_test_accuracy = accuracy(data[test_indexes], df_labels.family[test_indexes])
+        println("Final evaluation:")
+        println("Accuratcy on test data: $(full_test_accuracy)")
+        test_predictions = Dict()
+        # true_label = labelnames[1]
+        for true_label in labelnames
+            current_predictions = Dict()
+            [current_predictions[pl]=0.0 for pl in labelnames]
+            family_indexes = filter(i -> df_labels.family[i] == true_label, test_indexes)
+            predictions = tmap(data[family_indexes]) do s
+                Flux.onecold(softmax(model(s).data), labelnames)[1]
+            end
+            [current_predictions[pl] += 1.0 for pl in predictions]
+            [current_predictions[pl] = current_predictions[pl] ./ length(predictions) for pl in labelnames]
+            test_predictions[true_label] = current_predictions
+        end
+        @printf "%8s\t" "TL\\PL"
+        [@printf " %8s" s for s in labelnames]
+        print("\n")
+        for tl in labelnames
+            @printf "%8s\t" tl 
+            for pl in labelnames
+                @printf "%9s" @sprintf "%.2f" test_predictions[tl][pl]*100
+            end
+            print("\n")
+        end
+        @save Settings["model_multi_path"] model
+        @save Settings["extractor_multi_path"] extractor
+    end
+    return model,extractor
+end
+
+function classify(model,extractor,sample)
+    return softmax(model(extractor(sample; store_input=true)).data) 
+end
+
+function perturb(data)
+    for (key,value) in data
+        print(typeof(value), key)
+    end
+end
+
+function problem_space_replacement(original,replace_,data)
+    for (key,value) in data
+        if key == "resolved_apis" 
+            continue
+        end
+        #print(typeof(value))
+        if typeof(value) == Vector{Any}
+            if original in value
+                index=1
+                for j in value
+                    if occursin(original, j)
+                        break
+                    end
+                    index +=1
+                end
+                new_value = replace(value[index],original=>replace_)
+                value[index]= new_value
+            end
+        elseif typeof(value) == Dict{String,Any}
+            problem_space_replacement(original,replace_,value)
+        else
+            if occursin(original,value)
+                new_value = replace(value[index],original=>replace_)
+                data[key]= new_value
+            end
+
+        end
+    end
+end
+
+
+function modify(to_find,data)
+    for (key,value) in data
+        if key == "resolved_apis" 
+            continue
+        end
+        #print(typeof(value))
+        if typeof(value) == Vector{Any}
+            if to_find in value
+                index=1
+                for j in value
+                    if occursin(to_find, j)
+                        break
+                    end
+                    index +=1
+                end
+                if size(split(value[index],"\\"))[1] > 1
+                    original= split(value[index],"\\")[size(split(value[index],"\\"))[1]-1]*"\\"*split(value[index],"\\")[size(split(value[index],"\\"))[1]]
+                    new_value = replace(value[index],original=>randstring(5)*"\\"*randstring(5))
+                    new_value = randstring(10)
+                else
+                    new_value = replace(value[index],split(value[index],"\\")[size(split(value[index],"\\"))[1]]=>randstring(5)*"\\"*randstring(5))
+                    new_value = randstring(10)
+                end
+                value[index]= new_value
+            end
+        elseif typeof(value) == Dict{String,Any}
+            modify(to_find,value)
+        else
+            if occursin(to_find,value)
+                if size(split(value,"\\"))[1] > 1
+                    original= split(value,"\\")[size(split(value[index],"\\"))[1]-1]*"\\"*split(value,"\\")[size(split(value[index],"\\"))[1]]
+                    new_value = replace(value,original=>randstring(5)*"\\"*randstring(5))
+                    new_value = randstring(10)
+                else
+                    new_value = replace(value,split(value[index],"\\")[size(split(value,"\\"))[1]]=>randstring(5)*"\\"*randstring(5))
+                    new_value = randstring(10)
+                end
+                data[key]= new_value
+            end
+
+        end
+    end
+end
+
+function explanation(model,extractor,sample,value)
+    ds = extractor(sample; store_input=true)
+    e = ExplainMill.DafExplainer()
+    explanation = explain(e, ds, model; rel_tol=value, pruning_method=:LbyL_HArrft)
+    rule = e2boolean(ds,explanation,extractor)
+    return rule
+end
+
+function parse_commandline()
+    s = ArgParseSettings()
+
+    @add_arg_table s begin
+        "report"
+            help = "target report"
+            required = true
+        "threshold"
+            help = "class threshold"
+            default = 0.5
+    end
+
+    return parse_args(s)
+end
+
+
+function get_elements(data)
+    to_ret = Vector{String}()
+    if typeof(data) == Vector{String}
+        for j in data
+            push!(to_ret,j)
+        end
+    elseif  typeof(data) == Dict{Symbol,Vector{String}}
+        for (key,value) in data
+            if  typeof(value) == Dict{Symbol,Vector{String}} || typeof(value) == Vector{String}
+                to_add =get_elements(value)
+                while typeof(to_add) == Vector{String}
+                    to_add =first(to_add)
+                end
+                push!(to_ret,to_add)
+            else
+                push!(to_ret,value)
+            end
+        end
+    else
+        push!(to_ret,data)
+    end
+    return to_ret
+end
+
+function flat(data)
+    to_ret = Vector{String}()
+    for element in data
+        if typeof(data) == Vector{String}
+            for item in data
+                if typeof(item) == Vector{String}
+                    for iitem in item
+                        push!(to_ret,iitem)
+                    end
+                else
+                    push!(to_ret,item)
+                end
+            end
+        else
+            push!(to_ret,element)
+        end
+    end
+    return to_ret
+end
+
+function main()
+    #parsed_args = parse_commandline()
+    parsed_args = Dict("report"=>"/home/kylesa/avast_clf/v0.2/data_avast/401ca9202f4cd31f5fe506ba.json", "threshold"=>"0.7")
+    target_report =JSON.parsefile(parsed_args["report"])
+    model,extractor = load_model()
+    evaded = false
+    initial = nothing
+    explainer_value = 0.99
+    modified = Vector{String}()
+    iteration = 0
+    mapping = Dict()
+
+    while !evaded
+        classification = classify(model,extractor,target_report)
+        print("Current classification $(classification)\n")
+        classification = classification .> parse(Float32,parsed_args["threshold"])
+        if initial == nothing
+            initial = classification
+            print("Starting label $(classification)\n")
+        elseif  initial != classification
+            print("Evaded!")
+            evaded = true
+        else
+            guide = explanation(model,extractor,target_report,explainer_value)
+            if typeof(guide) != ExplainMill.Absent
+                JSON.print(guide, 2)
+                keys = Vector{String}()
+                for element in guide
+                    for (key,value) in element
+                        tmp_ = get_elements(value)
+                        print(tmp_)
+                        flat_ = flat(tmp_)
+                        for ii in flat_
+                            push!(keys,ii)
+                        end
+                    end
+                end
+                #feature space
+                #for key in keys
+                #    modify(key,target_report)
+                #    push!(modified,key)
+                #end
+                #problem space
+                for key in keys
+                    if !haskey(mapping,key)
+                        if size(split(key,"\\"))[1] > 1
+                            original= split(key,"\\")[size(split(key,"\\"))[1]-1]*"\\"*split(key,"\\")[size(split(key,"\\"))[1]]
+                            new_value = replace(key,original=>randstring(5)*"\\"*randstring(5))
+                        else
+                            new_value = replace(key,split(key,"\\")[size(split(key,"\\"))[1]]=>randstring(5)*"\\"*randstring(5))
+                        end
+                        mapping[key] = new_value
+                    end
+                    problem_space_replacement(key,mapping[key],target_report)
+                    #JSON.print(target_report,2)
+                    push!(modified,key)
+                end
+                iteration +=1
+            else
+                print("Null by the explainer, reducing sensibility \n")
+                explainer_value -= 0.01
+                if explainer_value <= 0
+                    break
+                end
+                #exit()
+            end
+            
+        end
+    end
+    open(base_path*"/reports/$(last(split(parsed_args["report"],"/")))","w") do f 
+        JSON.print(f, target_report) 
+    end
+end
+
+main()

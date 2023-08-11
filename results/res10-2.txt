@@ -1,0 +1,456 @@
+Iteration: 1
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading norm model...
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30,720/30,000  [ 2:28:03 < 0:00:00 , 2 it/s ]
+avg target score:  0.59426266
+avg length:  35.47221504264668
+avg reward:  3.079808120506929
+resets:  3871
+actions:  [array([[    0,  5534],
+       [    1,  2084],
+       [    2, 23102]]), array([[   0, 3803],
+       [   1, 1955],
+       [   2, 2381],
+       [   3, 5119],
+       [   4, 1952],
+       [   5, 1575],
+       [   6, 1627],
+       [   7, 1642],
+       [   8, 2059],
+       [   9, 1426],
+       [  10, 1168],
+       [  11, 3059],
+       [  12, 2954]]), array([[    0, 10824],
+       [    1,  7303],
+       [    2,  7405],
+       [    3,  5188]])]
+explanations:  [array([['executed_commands', '3869'],
+       ['files', '3869'],
+       ['resolved_apis', '3869']], dtype='<U21'), array([['keys', '3869'],
+       ['read_files', '3869']], dtype='<U21')]
+sizes:  [276.1033324722294, 778.7175874667076, 277.5740501421556, 779.086701135988]
+Loading norm model...
+Final evaluation:
+Clean accuracy on test data: 0.9991515837104072
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00   100.00     0.00
+  vobfus             0.00     0.19    99.81
+Iteration: 2
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30,720/30,000  [ 2:43:39 < 0:00:00 , 3 it/s ]
+avg target score:  0.65137255
+avg length:  108.50122448979592
+avg reward:  1.0080682335094544
+resets:  1227
+actions:  [array([[    0,  4988],
+       [    1,  5013],
+       [    2, 20719]]), array([[   0, 4490],
+       [   1, 2808],
+       [   2, 2318],
+       [   3, 1159],
+       [   4, 2226],
+       [   5, 1901],
+       [   6, 1915],
+       [   7, 2126],
+       [   8, 3393],
+       [   9, 1804],
+       [  10, 2743],
+       [  11, 1886],
+       [  12, 1951]]), array([[    0, 10821],
+       [    1,  7272],
+       [    2,  6847],
+       [    3,  5780]])]
+explanations:  [array([['files', '1225'],
+       ['resolved_apis', '1225'],
+       ['write_files', '1225']], dtype='<U21'), array([['keys', '1225'],
+       ['mutexes', '1225']], dtype='<U21')]
+sizes:  [303.16055419722903, 901.6385895615216, 307.33469387755105, 904.6006036155632]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9980203619909502
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00   100.00     0.00
+  vobfus             0.00     0.56    99.44
+Iteration: 3
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45,056/45,000  [ 2:10:09 < 0:00:00 , 5 it/s ]
+avg target score:  0.5518025
+avg length:  184.03174603174602
+avg reward:  -0.6041479003997069
+resets:  947
+actions:  [array([[    0, 21169],
+       [    1,  4258],
+       [    2, 19629]]), array([[    0,  1950],
+       [    1,  2293],
+       [    2, 21181],
+       [    3,  3621],
+       [    4,   885],
+       [    5,  2124],
+       [    6,  1332],
+       [    7,  2141],
+       [    8,  3806],
+       [    9,   848],
+       [   10,  1402],
+       [   11,  1490],
+       [   12,  1983]]), array([[    0, 12614],
+       [    1,  8961],
+       [    2, 13639],
+       [    3,  9842]])]
+explanations:  [array([['files', '945'],
+       ['resolved_apis', '945'],
+       ['write_files', '945']], dtype='<U21'), array([['mutexes', '945'],
+       ['write_keys', '945']], dtype='<U21')]
+sizes:  [311.86800422386483, 941.3404642257395, 334.1375661375661, 943.3491625327385]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9985859728506787
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00   100.00     0.00
+  vobfus             0.00     0.37    99.63
+Iteration: 4
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67,584/67,500  [ 1:19:28 < 0:00:00 , 19 it/s ]
+avg target score:  0.6911617
+avg length:  712.5287769784172
+avg reward:  -22.39272292303528
+resets:  280
+actions:  [array([[    0, 30784],
+       [    1, 11345],
+       [    2, 25455]]), array([[    0,  5546],
+       [    1,  2921],
+       [    2,  4796],
+       [    3,  6348],
+       [    4,  1519],
+       [    5,  4955],
+       [    6, 12337],
+       [    7,  9931],
+       [    8,  3816],
+       [    9,  1750],
+       [   10,  3299],
+       [   11,  6329],
+       [   12,  4037]]), array([[    0,  8807],
+       [    1, 27139],
+       [    2,  7046],
+       [    3, 24592]])]
+explanations:  [array([['executed_commands', '278'],
+       ['files', '278'],
+       ['resolved_apis', '278']], dtype='<U21'), array([['keys', '278'],
+       ['read_files', '278']], dtype='<U21')]
+sizes:  [307.3285714285714, 746.4371702853988, 415.3021582733813, 750.0906626705586]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9983031674208145
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00    99.95     0.05
+  vobfus             0.00     0.37    99.63
+Iteration: 5
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 101,376/101,250  [ 1:18:38 < 0:00:00 , 14 it/s ]
+avg target score:  0.21622042
+avg length:  1557.2522522522522
+avg reward:  -91.2768054124461
+resets:  113
+actions:  [array([[    0, 55541],
+       [    1, 22953],
+       [    2, 22882]]), array([[    0,  4079],
+       [    1,  3831],
+       [    2, 11439],
+       [    3,  8382],
+       [    4,  8679],
+       [    5,  4537],
+       [    6,  3044],
+       [    7,  6859],
+       [    8, 22926],
+       [    9,  1366],
+       [   10, 16077],
+       [   11,  7035],
+       [   12,  3122]]), array([[    0, 20568],
+       [    1, 26053],
+       [    2, 17138],
+       [    3, 37617]])]
+explanations:  [array([['executed_commands', '111'],
+       ['keys', '111'],
+       ['resolved_apis', '111']], dtype='<U21'), array([['mutexes', '111'],
+       ['resolved_apis', '111']], dtype='<U21')]
+sizes:  [259.5486725663717, 304.4314878865555, 696.2072072072073, 350.6702235916559]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9980203619909502
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.52     0.32     0.16
+ virlock             0.00   100.00     0.00
+  vobfus             0.00     0.37    99.63
+Iteration: 6
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152,576/151,875  [ 1:23:34 < 0:00:00 , 64 it/s ]
+avg target score:  0.019865809
+avg length:  1480.2774193548387
+avg reward:  -112.31002744382309
+resets:  157
+actions:  [array([[    0, 28508],
+       [    1, 96672],
+       [    2, 27396]]), array([[    0,  4129],
+       [    1, 10007],
+       [    2,  5976],
+       [    3, 10201],
+       [    4,  3443],
+       [    5,  3894],
+       [    6,  6891],
+       [    7,  3578],
+       [    8,  5134],
+       [    9,  2519],
+       [   10, 83698],
+       [   11,  9259],
+       [   12,  3847]]), array([[     0, 102382],
+       [     1,  17089],
+       [     2,  14566],
+       [     3,  18539]])]
+explanations:  [array([['delete_files', '155'],
+       ['keys', '155'],
+       ['resolved_apis', '155']], dtype='<U21'), array([['files', '155'],
+       ['mutexes', '155']], dtype='<U21')]
+sizes:  [246.42675159235668, 262.16752566565464, 390.05806451612904, 305.1300354996142]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9983031674208145
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00    99.89     0.11
+  vobfus             0.00     0.28    99.72
+Iteration: 7
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152,576/151,875  [ 1:31:27 < 0:00:00 , 87 it/s ]
+avg target score:  0.0002714431
+avg length:  1439.6184210526317
+avg reward:  -100.81856293772252
+resets:  154
+actions:  [array([[    0, 26173],
+       [    1, 93100],
+       [    2, 33303]]), array([[    0,  9791],
+       [    1,  7250],
+       [    2, 16648],
+       [    3,  6931],
+       [    4,  4946],
+       [    5,  5176],
+       [    6, 18812],
+       [    7,  4770],
+       [    8, 60000],
+       [    9,   402],
+       [   10,  6398],
+       [   11,  6658],
+       [   12,  4794]]), array([[    0, 71388],
+       [    1, 34958],
+       [    2, 22702],
+       [    3, 23528]])]
+explanations:  [array([['files', '152'],
+       ['read_files', '152'],
+       ['resolved_apis', '152']], dtype='<U21'), array([['executed_commands', '152'],
+       ['resolved_apis', '152']], dtype='<U21')]
+sizes:  [247.34415584415584, 264.6240994775181, 409.7631578947368, 291.38780310876774]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.997737556561086
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.52     0.32     0.16
+ virlock             0.00    99.95     0.05
+  vobfus             0.00     0.37    99.63
+Iteration: 8
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152,576/151,875  [ 3:37:49 < 0:00:00 , 18 it/s ]
+avg target score:  0.03455638
+avg length:  2024.576923076923
+avg reward:  -99.08533918704606
+resets:  158
+actions:  [array([[     0,  17951],
+       [     1,  14495],
+       [     2, 120130]]), array([[    0,  6205],
+       [    1,  7851],
+       [    2,  6507],
+       [    3, 14275],
+       [    4, 22248],
+       [    5,  1962],
+       [    6,  4885],
+       [    7, 15157],
+       [    8,  2837],
+       [    9,  2333],
+       [   10,  5842],
+       [   11,  6605],
+       [   12, 55869]]), array([[    0, 18140],
+       [    1, 76973],
+       [    2, 28060],
+       [    3, 29403]])]
+explanations:  [array([['delete_files', '156'],
+       ['files', '156'],
+       ['resolved_apis', '156']], dtype='<U21'), array([['executed_commands', '156'],
+       ['resolved_apis', '156']], dtype='<U21')]
+sizes:  [246.1139240506329, 261.36595845002574, 338.4423076923077, 281.3668615422963]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9968891402714932
+Robust accuracy on test data: 0.9354838709677419
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.52     0.32     0.16
+ virlock             0.05    99.95     0.00
+  vobfus             0.00     0.65    99.35
+Iteration: 9
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152,576/151,875  [ 3:31:48 < 0:00:00 , 12 it/s ]
+avg target score:  0.16833937
+avg length:  1577.3333333333333
+avg reward:  -83.51375140861693
+resets:  188
+actions:  [array([[     0,  16513],
+       [     1,  21099],
+       [     2, 114964]]), array([[    0, 22577],
+       [    1, 13583],
+       [    2,  5335],
+       [    3,  5507],
+       [    4,  9653],
+       [    5, 33993],
+       [    6,  6564],
+       [    7,  8526],
+       [    8, 14983],
+       [    9,  2178],
+       [   10,  8290],
+       [   11, 13635],
+       [   12,  7752]]), array([[    0, 30840],
+       [    1, 57419],
+       [    2, 36807],
+       [    3, 27510]])]
+explanations:  [array([['delete_files', '186'],
+       ['executed_commands', '186'],
+       ['resolved_apis', '186']], dtype='<U21'), array([['mutexes', '186'],
+       ['write_keys', '186']], dtype='<U21')]
+sizes:  [242.83510638297872, 243.04259201526656, 326.31182795698925, 263.07174206478857]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.998868778280543
+Robust accuracy on test data: 1.0
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.84     0.00     0.16
+ virlock             0.00    99.95     0.05
+  vobfus             0.00     0.19    99.81
+Iteration: 10
+  Activating environment at `~/avast_clf/v0.2/Project.toml`
+   Resolving package versions...
+  No Changes to `~/avast_clf/v0.2/Project.toml`
+  No Changes to `~/avast_clf/v0.2/Manifest.toml`
+Loading adv model...
+WARNING: redefinition of constant dfl. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant jsn. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant tdx. This may fail, cause incorrect answers, or produce other errors.
+WARNING: redefinition of constant rdx. This may fail, cause incorrect answers, or produce other errors.
+ 100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152,576/151,875  [ 3:19:38 < 0:00:00 , 34 it/s ]
+avg target score:  0.000109689885
+avg length:  1479.8092105263158
+avg reward:  -107.63055777737831
+resets:  154
+actions:  [array([[    0, 50837],
+       [    1, 13177],
+       [    2, 88562]]), array([[    0,  2569],
+       [    1, 15166],
+       [    2,  3441],
+       [    3, 15363],
+       [    4,  3304],
+       [    5,  2808],
+       [    6, 13314],
+       [    7, 29641],
+       [    8, 57638],
+       [    9,  3074],
+       [   10,  2482],
+       [   11,  1252],
+       [   12,  2524]]), array([[     0,  16904],
+       [     1,  22026],
+       [     2,  10323],
+       [     3, 103323]])]
+explanations:  [array([['delete_files', '152'],
+       ['executed_commands', '152'],
+       ['resolved_apis', '152']], dtype='<U21'), array([['executed_commands', '152'],
+       ['resolved_apis', '152']], dtype='<U21')]
+sizes:  [247.34415584415584, 264.6240994775181, 553.0723684210526, 285.02183900568053]
+Loading adv model...
+Final evaluation:
+Clean accuracy on test data: 0.9980203619909502
+Robust accuracy on test data: 0.9666666666666667
+   TL\PL           shipup  virlock   vobfus
+  shipup            99.68     0.16     0.16
+ virlock             0.05    99.95     0.00
+  vobfus             0.00     0.37    99.63
